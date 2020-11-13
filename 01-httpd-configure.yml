@@ -1,0 +1,26 @@
+---
+- name: Configure apache/httpd webserver
+  hosts: loadbalancer
+  tasks:
+  - name: Copy selinux config file
+    copy:
+      src: config
+      dest: /etc/selinux/
+  - name: Restart loadbalancer
+    reboot:
+  - name: Copy mod_jk
+    copy:
+      src: mod_jk.so
+      dest: /etc/httpd/modules/
+  - name: Copy 10-mod-jk.conf
+    copy:
+      src: 10-mod-jk.conf
+      dest: /etc/httpd/conf.modules.d/
+  - name: Copy workers.properties
+    copy:
+      src: workers.properties
+      dest: /etc/httpd/conf
+  - name: Restart service httpd, in all cases
+    service:
+      name: httpd
+      state: restarted
